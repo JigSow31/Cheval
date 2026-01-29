@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Carnet d'Équitation 🐎</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .horse-card.active { border: 3px solid #6366f1; background-color: #f5f3ff; }
+        body { background-color: #fdfbf7; }
+    </style>
+</head>
+<body class="p-4 max-w-md mx-auto">
+
+    <header class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Hello Cavalière ! 👋</h1>
+        <div id="weather" class="text-sm text-gray-600 mt-2 bg-white p-2 rounded-lg shadow-sm">
+            📍 Pôle Hippique de Montlaur : <span id="temp">Chargement...</span>
+        </div>
+    </header>
+
+    <div class="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg mb-6 text-center">
+        <p class="text-xs uppercase tracking-widest opacity-80">Prochain galop dans</p>
+        <div id="countdown" class="text-2xl font-black py-1">--j --h --m</div>
+    </div>
+
+    <section class="mb-6">
+        <h2 class="font-bold mb-3 text-gray-700"><i class="fas fa-horse"></i> Qui est ta monture ?</h2>
+        <div class="flex overflow-x-auto space-x-3 pb-2" id="horse-list">
+            </div>
+    </section>
+
+    <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6">
+        <h2 class="font-bold mb-4 text-gray-700"><i class="fas fa-tasks"></i> Rituel de préparation</h2>
+        <div class="space-y-3">
+            <label class="flex items-center space-x-3 text-gray-600">
+                <input type="checkbox" class="w-5 h-5 rounded border-gray-300"> <span>Grosse gratouille de bonjour</span>
+            </label>
+            <label class="flex items-center space-x-3 text-gray-600">
+                <input type="checkbox" class="w-5 h-5 rounded border-gray-300"> <span>Pansage complet (il brille !)</span>
+            </label>
+            <label class="flex items-center space-x-3 text-gray-600">
+                <input type="checkbox" class="w-5 h-5 rounded border-gray-300"> <span>Curer les pieds</span>
+            </label>
+            <label class="flex items-center space-x-3 text-gray-600">
+                <input type="checkbox" class="w-5 h-5 rounded border-gray-300"> <span>Selle & Filet ajustés</span>
+            </label>
+        </div>
+    </section>
+
+    <button onclick="sendAlert()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center space-x-3 transition-transform active:scale-95">
+        <span class="text-2xl">🥕</span>
+        <span>SIGNAL CAROTTES !</span>
+    </button>
+
+    <script>
+        const horses = [
+            {name: "Diva", icon: "⭐"}, {name: "Boléro", icon: "🎻"}, 
+            {name: "Frontera", icon: "🐎"}, {name: "Jumper", icon: "🦘"},
+            {name: "Noname", icon: "❓"}, {name: "Bandolera", icon: "💃"},
+            {name: "Hacienda", icon: "🏡"}, {name: "Moon", icon: "🌙"},
+            {name: "Guappa", icon: "🎀"}, {name: "Koda", icon: "🐻"},
+            {name: "Rififi", icon: "🌪️"}
+        ];
+
+        // Remplir la liste des chevaux
+        const horseList = document.getElementById('horse-list');
+        horses.forEach(h => {
+            const div = document.createElement('div');
+            div.className = "horse-card flex-shrink-0 bg-white p-4 rounded-xl shadow-sm text-center min-w-[100px] border cursor-pointer";
+            div.innerHTML = `<div class="text-2xl">${h.icon}</div><div class="font-bold text-sm">${h.name}</div>`;
+            div.onclick = () => {
+                document.querySelectorAll('.horse-card').forEach(c => c.classList.remove('active'));
+                div.classList.add('active');
+            };
+            horseList.appendChild(div);
+        });
+
+        // Compte à rebours (Lun & Jeu 19h)
+        function updateCountdown() {
+            const now = new Date();
+            const nextSession = new Date();
+            const day = now.getDay(); // 0=Dim, 1=Lun, 4=Jeu
+            
+            // Logique simplifiée pour trouver le prochain Lun (1) ou Jeu (4)
+            let daysToAdd = (day <= 1) ? (1 - day) : (day <= 4 ? 4 - day : 8 - day);
+            if (daysToAdd === 0 && now.getHours() >= 19) daysToAdd = (day === 1 ? 3 : 4);
+            
+            nextSession.setDate(now.getDate() + daysToAdd);
+            nextSession.setHours(19, 0, 0, 0);
+
+            const diff = nextSession - now;
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / 1000 / 60) % 60);
+            document.getElementById('countdown').innerText = `${d}j ${h}h ${m}m`;
+        }
+        setInterval(updateCountdown, 60000);
+        updateCountdown();
+
+        // Météo (API simplifiée ou texte statique pour l'exemple)
+        // Note: Pour une vraie API, il faudrait une clé, ici on simule pour Montlaur
+        document.getElementById('temp').innerText = "12°C - Beau temps ☀️";
+
+        // Alerte Carotte (Ouvre SMS sur mobile)
+        function sendAlert() {
+            const horse = document.querySelector('.horse-card.active div:last-child')?.innerText || "son cheval";
+            const text = encodeURIComponent(`Coucou ! J'ai fini ma séance avec ${horse} à Montlaur. On attend nos carottes ! 🥕🐎`);
+            window.location.href = `sms:?body=${text}`; 
+            // Note: Remplacez par `sms:VOTRE_NUMERO?body=...` si vous voulez que ça remplisse le destinataire.
+        }
+    </script>
+</body>
+</html>
