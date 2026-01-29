@@ -2,79 +2,85 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Carnet d'Équitation 🐎</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Carnet Équestre 🐎</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/616/616562.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .horse-card.active { border: 3px solid #6366f1; background-color: #f5f3ff; }
+        :root { --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom); }
+        body { background-color: #f8fafc; padding-top: var(--safe-top); padding-bottom: calc(80px + var(--safe-bottom)); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .horse-card.active { border: 2px solid #6366f1; background-color: #eef2ff; transform: scale(1.05); }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        body { background-color: #fdfbf7; padding-bottom: 80px; }
-        .checklist-item input:checked + span { text-decoration: line-through; opacity: 0.6; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .ios-blur { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="p-4 max-w-md mx-auto">
 
     <div id="home" class="tab-content active">
-        <header class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Hello Cavalière ! 👋</h1>
-            <div class="text-sm text-gray-600 mt-2 bg-white p-2 rounded-lg shadow-sm">
-                📍 Pôle Hippique de Montlaur : <span id="weather-text">14°C - Beau temps ☀️</span>
-            </div>
+        <header class="text-left mt-4 mb-6 px-2">
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Bonjour ! 👋</h1>
+            <p class="text-slate-500 font-medium">Pôle Hippique de Montlaur</p>
         </header>
 
-        <div class="bg-indigo-600 text-white p-5 rounded-3xl shadow-lg mb-6 text-center">
-            <p class="text-xs uppercase tracking-widest opacity-80 mb-1">Prochaine séance dans</p>
-            <div id="countdown" class="text-3xl font-black italic tracking-tight">--j --h --m</div>
+        <div class="bg-slate-900 text-white p-6 rounded-[2rem] shadow-xl mb-8">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60 mb-1 text-center">Prochaine séance</p>
+            <div id="countdown" class="text-3xl font-mono font-bold text-center tracking-tighter">--j --h --m</div>
         </div>
 
-        <section class="mb-6">
-            <h2 class="font-bold mb-3 text-gray-700">Quelle monture aujourd'hui ?</h2>
-            <div class="flex overflow-x-auto space-x-3 pb-2" id="horse-list"></div>
+        <section class="mb-8">
+            <div class="flex justify-between items-end mb-4 px-2">
+                <h2 class="font-bold text-slate-800 text-lg">Ta monture</h2>
+                <span class="text-xs text-slate-400 font-bold" id="selected-name">Aucune sélection</span>
+            </div>
+            <div class="flex overflow-x-auto space-x-4 pb-4 snap-x px-2" id="horse-list" style="scrollbar-width: none;">
+                </div>
         </section>
 
-        <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <h2 class="font-bold mb-4 text-gray-700 flex items-center">
-                <i class="fas fa-clipboard-check mr-2 text-indigo-500"></i> Rituel de préparation
+        <section class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 mb-6">
+            <h2 class="font-bold mb-5 text-slate-800 flex items-center">
+                <i class="fas fa-check-circle mr-3 text-indigo-500"></i> Préparation
             </h2>
-            <div class="space-y-4" id="checklist">
-                <label class="checklist-item flex items-center space-x-3 text-gray-600">
-                    <input type="checkbox" class="w-6 h-6 rounded-full border-gray-300 text-indigo-600 focus:ring-indigo-500"> 
-                    <span>Grosse gratouille de bonjour</span>
+            <div class="space-y-5" id="checklist">
+                <label class="flex items-center space-x-4 text-slate-600">
+                    <input type="checkbox" class="w-6 h-6 rounded-full border-slate-300 text-indigo-600 focus:ring-0"> 
+                    <span class="text-sm font-medium">Grosse gratouille de bonjour</span>
                 </label>
-                <label class="checklist-item flex items-center space-x-3 text-gray-600">
-                    <input type="checkbox" class="w-6 h-6 rounded-full border-gray-300 text-indigo-600 focus:ring-indigo-500"> 
-                    <span>Pansage complet</span>
+                <label class="flex items-center space-x-4 text-slate-600">
+                    <input type="checkbox" class="w-6 h-6 rounded-full border-slate-300 text-indigo-600 focus:ring-0"> 
+                    <span class="text-sm font-medium">Pansage complet</span>
                 </label>
-                <label class="checklist-item flex items-center space-x-3 text-gray-600">
-                    <input type="checkbox" class="w-6 h-6 rounded-full border-gray-300 text-indigo-600 focus:ring-indigo-500"> 
-                    <span>Curer les pieds</span>
+                <label class="flex items-center space-x-4 text-slate-600">
+                    <input type="checkbox" class="w-6 h-6 rounded-full border-slate-300 text-indigo-600 focus:ring-0"> 
+                    <span class="text-sm font-medium">Curer les pieds</span>
                 </label>
-                <hr class="border-gray-100">
-                <label class="flex items-center space-x-3 text-indigo-700 font-bold">
-                    <input type="checkbox" class="w-6 h-6 border-indigo-300 text-indigo-600" id="confirm-ride"> 
-                    <span>Séance terminée ! Enregistrer ✨</span>
-                </label>
+                <div class="pt-4 mt-4 border-t border-slate-50">
+                    <label class="flex items-center space-x-4 text-indigo-700 font-bold">
+                        <input type="checkbox" class="w-6 h-6 rounded border-indigo-300 text-indigo-600 focus:ring-0" id="confirm-ride"> 
+                        <span class="text-sm">Enregistrer la séance</span>
+                    </label>
+                </div>
             </div>
         </section>
     </div>
 
-    <div id="stats" class="tab-content">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Tes Statistiques 📊</h2>
-        <div id="stats-container" class="space-y-3">
-            </div>
-        <div class="mt-8 p-4 bg-orange-50 rounded-xl border border-orange-100 text-orange-800 text-sm text-center">
-            Bravo pour ta régularité au Pôle de Montlaur ! 🐎
-        </div>
+    <div id="stats" class="tab-content px-2">
+        <h2 class="text-3xl font-black text-slate-900 mb-8 mt-4 tracking-tight">Statistiques</h2>
+        <div id="stats-container" class="space-y-4"></div>
     </div>
 
-    <nav class="fixed bottom-4 left-4 right-4 bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl flex justify-around p-3 shadow-xl">
-        <button onclick="showTab('home')" id="nav-home" class="flex flex-col items-center text-indigo-600 transition-colors">
-            <i class="fas fa-horse-head text-xl"></i><span class="text-[10px] mt-1 font-bold">PRÉPA</span>
+    <nav class="fixed bottom-6 left-6 right-6 h-16 ios-blur border border-white/20 rounded-full flex justify-around items-center shadow-2xl z-50">
+        <button onclick="showTab('home')" id="nav-home" class="flex flex-col items-center text-indigo-600">
+            <i class="fas fa-horse text-xl"></i><span class="text-[9px] mt-1 font-black uppercase">Écurie</span>
         </button>
-        <button onclick="showTab('stats')" id="nav-stats" class="flex flex-col items-center text-gray-400 transition-colors">
-            <i class="fas fa-chart-line text-xl"></i><span class="text-[10px] mt-1 font-bold">STATS</span>
+        <button onclick="showTab('stats')" id="nav-stats" class="flex flex-col items-center text-slate-400">
+            <i class="fas fa-chart-bar text-xl"></i><span class="text-[9px] mt-1 font-black uppercase">Stats</span>
         </button>
     </nav>
 
@@ -88,16 +94,17 @@
 
         let selectedHorse = "";
 
-        // Initialisation Chevaux
+        // Injection des chevaux
         const horseList = document.getElementById('horse-list');
         horses.forEach(h => {
             const div = document.createElement('div');
-            div.className = "horse-card flex-shrink-0 bg-white p-4 rounded-2xl shadow-sm text-center min-w-[90px] border border-gray-100 cursor-pointer transition-all";
-            div.innerHTML = `<div class="text-2xl mb-1">${h.icon}</div><div class="font-bold text-xs uppercase tracking-tighter text-gray-700">${h.name}</div>`;
+            div.className = "horse-card flex-shrink-0 bg-white p-5 rounded-[1.5rem] shadow-sm text-center min-w-[100px] border border-slate-50 snap-center transition-all duration-200";
+            div.innerHTML = `<div class="text-3xl mb-2">${h.icon}</div><div class="font-black text-[10px] uppercase tracking-wider text-slate-800">${h.name}</div>`;
             div.onclick = () => {
-                document.querySelectorAll('.horse-card').forEach(c => c.classList.remove('active', 'shadow-md'));
-                div.classList.add('active', 'shadow-md');
+                document.querySelectorAll('.horse-card').forEach(c => c.classList.remove('active'));
+                div.classList.add('active');
                 selectedHorse = h.name;
+                document.getElementById('selected-name').innerText = h.name;
             };
             horseList.appendChild(div);
         });
@@ -106,25 +113,66 @@
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            
             const isHome = tabId === 'home';
-            document.getElementById('nav-home').classList.toggle('text-indigo-600', isHome);
-            document.getElementById('nav-home').classList.toggle('text-gray-400', !isHome);
-            document.getElementById('nav-stats').classList.toggle('text-indigo-600', !isHome);
-            document.getElementById('nav-stats').classList.toggle('text-gray-400', isHome);
-
+            document.getElementById('nav-home').className = isHome ? "flex flex-col items-center text-indigo-600" : "flex flex-col items-center text-slate-400";
+            document.getElementById('nav-stats').className = isHome ? "flex flex-col items-center text-slate-400" : "flex flex-col items-center text-indigo-600";
             if(tabId === 'stats') updateStatsUI();
         }
 
-        // Enregistrement Stats
+        // Stats
         document.getElementById('confirm-ride').addEventListener('change', function() {
             if(this.checked) {
                 if(!selectedHorse) {
-                    alert("Oups ! Choisis ton cheval d'abord 🐎");
+                    alert("Choisis d'abord un cheval ! 🐎");
                     this.checked = false;
                     return;
                 }
                 let stats = JSON.parse(localStorage.getItem('horseStats')) || {};
                 stats[selectedHorse] = (stats[selectedHorse] || 0) + 1;
                 localStorage.setItem('horseStats', JSON.stringify(stats));
-                alert(`Séance avec ${selectedHorse} enregistrée
+                alert(`Séance avec ${selectedHorse} enregistrée !`);
+                this.checked = false;
+                // Reset visuel
+                document.querySelectorAll('#checklist input[type="checkbox"]').forEach(i => i.checked = false);
+            }
+        });
+
+        function updateStatsUI() {
+            const stats = JSON.parse(localStorage.getItem('horseStats')) || {};
+            const container = document.getElementById('stats-container');
+            container.innerHTML = "";
+            const sorted = Object.entries(stats).sort((a,b) => b[1] - a[1]);
+            sorted.forEach(([name, count]) => {
+                const h = horses.find(x => x.name === name);
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-slate-50">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-2xl">${h ? h.icon : '🐎'}</span>
+                            <span class="font-bold text-slate-800">${name}</span>
+                        </div>
+                        <span class="text-indigo-600 font-black text-sm">${count}</span>
+                    </div>`;
+            });
+            if(sorted.length === 0) container.innerHTML = "<p class='text-center text-slate-400 mt-20'>Aucune séance encore.</p>";
+        }
+
+        // Compte à rebours
+        function updateCountdown() {
+            const now = new Date();
+            let next = new Date();
+            const day = now.getDay();
+            let daysToAdd = (day <= 1) ? (1 - day) : (day <= 4 ? 4 - day : 8 - day);
+            if (daysToAdd === 0 && now.getHours() >= 19) daysToAdd = (day === 1 ? 3 : 4);
+            next.setDate(now.getDate() + daysToAdd);
+            next.setHours(19, 0, 0, 0);
+            const diff = next - now;
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            document.getElementById('countdown').innerText = `${d}j ${h}h ${m}m`;
+        }
+        setInterval(updateCountdown, 60000);
+        updateCountdown();
+    </script>
+</body>
+</html>
