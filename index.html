@@ -11,6 +11,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         body { background-color: #fdfbf7; padding-bottom: 80px; }
+        .checklist-item input:checked + span { text-decoration: line-through; opacity: 0.6; }
     </style>
 </head>
 <body class="p-4 max-w-md mx-auto">
@@ -19,50 +20,61 @@
         <header class="text-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800">Hello Cavalière ! 👋</h1>
             <div class="text-sm text-gray-600 mt-2 bg-white p-2 rounded-lg shadow-sm">
-                📍 Pôle Hippique de Montlaur : <span>14°C - Beau temps ☀️</span>
+                📍 Pôle Hippique de Montlaur : <span id="weather-text">14°C - Beau temps ☀️</span>
             </div>
         </header>
 
-        <div class="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg mb-6 text-center">
-            <p class="text-xs uppercase tracking-widest opacity-80">Prochain galop dans</p>
-            <div id="countdown" class="text-2xl font-black py-1">--j --h --m</div>
+        <div class="bg-indigo-600 text-white p-5 rounded-3xl shadow-lg mb-6 text-center">
+            <p class="text-xs uppercase tracking-widest opacity-80 mb-1">Prochaine séance dans</p>
+            <div id="countdown" class="text-3xl font-black italic tracking-tight">--j --h --m</div>
         </div>
 
         <section class="mb-6">
-            <h2 class="font-bold mb-3 text-gray-700">Qui est ta monture aujourd'hui ?</h2>
+            <h2 class="font-bold mb-3 text-gray-700">Quelle monture aujourd'hui ?</h2>
             <div class="flex overflow-x-auto space-x-3 pb-2" id="horse-list"></div>
         </section>
 
         <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <h2 class="font-bold mb-4 text-gray-700 italic">Rituel de préparation</h2>
-            <div class="space-y-3" id="checklist">
-                <label class="flex items-center space-x-3 text-gray-600"><input type="checkbox" class="w-5 h-5"> <span>Câlin de bonjour</span></label>
-                <label class="flex items-center space-x-3 text-gray-600"><input type="checkbox" class="w-5 h-5"> <span>Pansage complet</span></label>
-                <label class="flex items-center space-x-3 text-gray-600"><input type="checkbox" class="w-5 h-5"> <span>Curer les pieds</span></label>
-                <label class="flex items-center space-x-3 text-gray-600 font-bold text-indigo-600">
-                    <input type="checkbox" class="w-5 h-5" id="confirm-ride"> <span>Prête pour le départ !</span>
+            <h2 class="font-bold mb-4 text-gray-700 flex items-center">
+                <i class="fas fa-clipboard-check mr-2 text-indigo-500"></i> Rituel de préparation
+            </h2>
+            <div class="space-y-4" id="checklist">
+                <label class="checklist-item flex items-center space-x-3 text-gray-600">
+                    <input type="checkbox" class="w-6 h-6 rounded-full border-gray-300 text-indigo-600 focus:ring-indigo-500"> 
+                    <span>Grosse gratouille de bonjour</span>
+                </label>
+                <label class="checklist-item flex items-center space-x-3 text-gray-600">
+                    <input type="checkbox" class="w-6 h-6 rounded-full border-gray-300 text-indigo-600 focus:ring-indigo-500"> 
+                    <span>Pansage complet</span>
+                </label>
+                <label class="checklist-item flex items-center space-x-3 text-gray-600">
+                    <input type="checkbox" class="w-6 h-6 rounded-full border-gray-300 text-indigo-600 focus:ring-indigo-500"> 
+                    <span>Curer les pieds</span>
+                </label>
+                <hr class="border-gray-100">
+                <label class="flex items-center space-x-3 text-indigo-700 font-bold">
+                    <input type="checkbox" class="w-6 h-6 border-indigo-300 text-indigo-600" id="confirm-ride"> 
+                    <span>Séance terminée ! Enregistrer ✨</span>
                 </label>
             </div>
         </section>
-
-        <button onclick="sendAlert()" class="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center space-x-3 transition-transform active:scale-95">
-            <span>🥕 SIGNAL CAROTTES</span>
-        </button>
     </div>
 
     <div id="stats" class="tab-content">
         <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Tes Statistiques 📊</h2>
-        <div id="stats-container" class="space-y-4">
+        <div id="stats-container" class="space-y-3">
             </div>
-        <p class="text-xs text-center text-gray-400 mt-10 italic">Tes montures depuis le début de ton carnet.</p>
+        <div class="mt-8 p-4 bg-orange-50 rounded-xl border border-orange-100 text-orange-800 text-sm text-center">
+            Bravo pour ta régularité au Pôle de Montlaur ! 🐎
+        </div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-3 shadow-2xl">
-        <button onclick="showTab('home')" class="flex flex-col items-center text-indigo-600">
-            <i class="fas fa-home text-xl"></i><span class="text-xs">Accueil</span>
+    <nav class="fixed bottom-4 left-4 right-4 bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl flex justify-around p-3 shadow-xl">
+        <button onclick="showTab('home')" id="nav-home" class="flex flex-col items-center text-indigo-600 transition-colors">
+            <i class="fas fa-horse-head text-xl"></i><span class="text-[10px] mt-1 font-bold">PRÉPA</span>
         </button>
-        <button onclick="showTab('stats')" class="flex flex-col items-center text-gray-400">
-            <i class="fas fa-chart-pie text-xl"></i><span class="text-xs">Stats</span>
+        <button onclick="showTab('stats')" id="nav-stats" class="flex flex-col items-center text-gray-400 transition-colors">
+            <i class="fas fa-chart-line text-xl"></i><span class="text-[10px] mt-1 font-bold">STATS</span>
         </button>
     </nav>
 
@@ -76,77 +88,43 @@
 
         let selectedHorse = "";
 
-        // Initialisation de la liste des chevaux
+        // Initialisation Chevaux
         const horseList = document.getElementById('horse-list');
         horses.forEach(h => {
             const div = document.createElement('div');
-            div.className = "horse-card flex-shrink-0 bg-white p-4 rounded-xl shadow-sm text-center min-w-[90px] border cursor-pointer";
-            div.innerHTML = `<div class="text-2xl">${h.icon}</div><div class="font-bold text-sm">${h.name}</div>`;
+            div.className = "horse-card flex-shrink-0 bg-white p-4 rounded-2xl shadow-sm text-center min-w-[90px] border border-gray-100 cursor-pointer transition-all";
+            div.innerHTML = `<div class="text-2xl mb-1">${h.icon}</div><div class="font-bold text-xs uppercase tracking-tighter text-gray-700">${h.name}</div>`;
             div.onclick = () => {
-                document.querySelectorAll('.horse-card').forEach(c => c.classList.remove('active'));
-                div.classList.add('active');
+                document.querySelectorAll('.horse-card').forEach(c => c.classList.remove('active', 'shadow-md'));
+                div.classList.add('active', 'shadow-md');
                 selectedHorse = h.name;
             };
             horseList.appendChild(div);
         });
 
-        // Gestion des onglets
+        // Navigation
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
+            
+            const isHome = tabId === 'home';
+            document.getElementById('nav-home').classList.toggle('text-indigo-600', isHome);
+            document.getElementById('nav-home').classList.toggle('text-gray-400', !isHome);
+            document.getElementById('nav-stats').classList.toggle('text-indigo-600', !isHome);
+            document.getElementById('nav-stats').classList.toggle('text-gray-400', isHome);
+
             if(tabId === 'stats') updateStatsUI();
         }
 
-        // Enregistrer une séance
+        // Enregistrement Stats
         document.getElementById('confirm-ride').addEventListener('change', function() {
-            if(this.checked && selectedHorse) {
+            if(this.checked) {
+                if(!selectedHorse) {
+                    alert("Oups ! Choisis ton cheval d'abord 🐎");
+                    this.checked = false;
+                    return;
+                }
                 let stats = JSON.parse(localStorage.getItem('horseStats')) || {};
                 stats[selectedHorse] = (stats[selectedHorse] || 0) + 1;
                 localStorage.setItem('horseStats', JSON.stringify(stats));
-                alert(`Séance avec ${selectedHorse} enregistrée ! 🎉`);
-            } else if (!selectedHorse) {
-                alert("Choisis d'abord ton cheval !");
-                this.checked = false;
-            }
-        });
-
-        // Mise à jour de l'affichage des stats
-        function updateStatsUI() {
-            const stats = JSON.parse(localStorage.getItem('horseStats')) || {};
-            const container = document.getElementById('stats-container');
-            container.innerHTML = "";
-            
-            Object.entries(stats).sort((a,b) => b[1] - a[1]).forEach(([name, count]) => {
-                const row = document.createElement('div');
-                row.className = "flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border-l-4 border-indigo-500";
-                row.innerHTML = `<span class="font-bold">${name}</span> <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-bold">${count} séance(s)</span>`;
-                container.appendChild(row);
-            });
-            if(Object.keys(stats).length === 0) container.innerHTML = "<p class='text-center text-gray-500'>Aucune séance enregistrée pour le moment.</p>";
-        }
-
-        // Countdown Lun/Jeu 19h
-        function updateCountdown() {
-            const now = new Date();
-            let next = new Date();
-            const day = now.getDay();
-            let daysToAdd = (day <= 1) ? (1 - day) : (day <= 4 ? 4 - day : 8 - day);
-            if (daysToAdd === 0 && now.getHours() >= 19) daysToAdd = (day === 1 ? 3 : 4);
-            next.setDate(now.getDate() + daysToAdd);
-            next.setHours(19, 0, 0, 0);
-            const diff = next - now;
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            document.getElementById('countdown').innerText = `${d}j ${h}h ${m}m`;
-        }
-        setInterval(updateCountdown, 60000);
-        updateCountdown();
-
-        function sendAlert() {
-            const text = encodeURIComponent(`Coucou ! Séance finie avec ${selectedHorse || "mon cheval"} à Montlaur. On attend nos carottes ! 🥕🐎`);
-            window.location.href = `sms:0619972026?body=${text}`;
-        }
-    </script>
-</body>
-</html>
+                alert(`Séance avec ${selectedHorse} enregistrée
